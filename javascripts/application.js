@@ -75,7 +75,7 @@ Ssb.View = {
     $("div#state_tabs > ul").tabs({
       selected: null,
       cache: true
-    }).bind("tabsselect", function(event, original_event, ui){
+    }).bind("tabsselect", function(event, ui){
       // ui.tab 選択されたタブを表す
       // ui.panel 選択されたタブに関連するパネルを表す
       Ssb.View.updatePanel($(ui.panel));
