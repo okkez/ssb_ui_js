@@ -39,6 +39,9 @@ div.books a {
 div.books a:hover {
   color:red;
 }
+div.books li.stock span a:visited {
+  color:blue;
+}
 
 li.item:nth-child(odd) {
   background-color:red;
