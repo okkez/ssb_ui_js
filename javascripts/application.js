@@ -49,7 +49,7 @@ Ssb.API.Book = {
     $.getJSON(Ssb.Util.url(Ssb.API.site+"user/{user_id_type}/{user_id}/stocks/{state}.json", options, params), callback);
   },
   create_or_update: function(book, callback) {
-    if (Ssb.API.token == null || Ssb.API.token == ""){
+    if (Ssb.API.token === null || Ssb.API.token === ""){
       return;
     }
     // book = { asin:1234567890, date:'yyyy-mm-dd', state:'unread', public:true }
@@ -132,11 +132,37 @@ Ssb.View = {
 	  $("li.stock:nth-child(odd)").css("background-color", "#FFFCD0");
 	  $("li.stock:nth-child(even)").css("background-color", "#DEF1FD");
 	} else {
+      this.clearMessage();
 	  $("#errorExplanation").empty()
 	    .append($("<h2>").text(data.message),
 		    $("<p>").text(data.message));
 	}
       }
     );
+  },
+  clearMessage: function() {
+    $("div#message").hide().find("p").empty();
+  },
+  addErrorMessage: function(message) {
+    $("div#message").show()
+        .find("div")
+        .removeClass("ui-state-highlight")
+        .addClass("ui-state-error")
+        .find("p").append($("<span>")
+                          .addClass("ui-icon").addClass("ui-icon-alert")
+                          .css("fload","left").css("margin-right",".3em"),
+                          $("<strong>").text("alert : "),
+                          $("<span>").text(message));
+  },
+  addInfoMessage: function(message) {
+    $("div#message").show()
+        .find("div")
+        .addClass("ui-state-highlight")
+        .removeClass("ui-state-error")
+        .find("p").append($("<span>")
+                          .addClass("ui-icon").addClass("ui-icon-info")
+                          .css("fload","left").css("margin-right",".3em"),
+                          $("<strong>").text("alert : "),
+                          $("<span>").text(message));
   }
 };
