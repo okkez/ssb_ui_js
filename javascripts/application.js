@@ -125,9 +125,9 @@ Ssb.View = {
             { user_id_type: "name", user_id: Ssb.API.user_name, state: state },
             { include_books: true, page: 1, callback:"?" },
             function(data){
-                this.clearMessage();
+                Ssb.View.clearMessage();
                 if (data.success) {
-                    this.addInfoMessage(data.message);
+                    Ssb.View.addInfoMessage(data.message);
                     panel.append($("<ul>"));
                     $.each(data.response.stocks, function(index, stock) {
                         $("ul", panel)
@@ -142,7 +142,7 @@ Ssb.View = {
                     $("li.stock:nth-child(odd)").css("background-color", "#FFFCD0");
                     $("li.stock:nth-child(even)").css("background-color", "#DEF1FD");
                 } else {
-                    this.addErrorMessage(data.message);
+                    Ssb.View.addErrorMessage(data.message);
                 }
             }
         );
@@ -151,7 +151,7 @@ Ssb.View = {
         $("div#message").hide().find("p").empty();
     },
     addErrorMessage: function(message) {
-        $("div#message").show()
+        $("div#message").show().click(function(event) { $(this).hide(); })
             .find("div")
             .removeClass("ui-state-highlight")
             .addClass("ui-state-error")
@@ -170,7 +170,7 @@ Ssb.View = {
                               .addClass("ui-icon ui-icon-info")
                               .css("float","left").css("margin-right",".3em"),
                               $("<strong>").text("Alert : "),
-                              $("<span>").text(message));
+                              $("<span>").text(message)).end().fadeOut(3000);
     },
     toggleForm: function() {
         $("div#initialize_form").find("input[type='text']").each(function(i, e) {
