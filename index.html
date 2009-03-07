@@ -15,7 +15,6 @@
    //<![CDATA[
    $(function(){
      $("div#initialize_form input#submit").bind("click", function(e){
-       $("div#initialize_form").hide();
        Ssb.API.initialize();
        Ssb.API.Book.initialize();
        Ssb.View.initialize();
@@ -37,6 +36,7 @@
         <label for="api_token">API Token :</label>
         <input type="text" name="api_token" id="api_token" value=""/>
         <input type="submit" name="submit" id="submit" />
+        <input type="submit" name="toggle" id="toggle" style="display:none"/>
         <a href="http://stack.nayutaya.jp/api">Stack Stock Books - API</a>
       </form>
     </div>

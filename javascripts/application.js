@@ -61,6 +61,13 @@ Ssb.API.Book = {
 
 Ssb.View = {
     initialize: function(){
+        $("div#initialize_form").find("input[type='text']").each(function(i, e) {
+            $(e).attr('readonly', true);
+        }).end().find("input#submit").each(function(i,e) {
+            $(e).hide();
+        }).end().find("input#toggle").each(function(i,e) {
+            $(e).click(Ssb.View.toggleForm).attr("value", "re-edit").show();
+        });
         $("div#contents")
             .append($("<div>").attr("id", "state_tabs")
             .append($("<ul>")
@@ -164,5 +171,17 @@ Ssb.View = {
                               .css("float","left").css("margin-right",".3em"),
                               $("<strong>").text("Alert : "),
                               $("<span>").text(message));
+    },
+    toggleForm: function() {
+        $("div#initialize_form").find("input[type='text']").each(function(i, e) {
+            $(e).attr("readonly", function(i) {
+                return !$(this).attr("readonly");
+            });
+        }).end().find("input#toggle").each(function(i, e) {
+            $(e).attr("value", function(i) {
+                return ("submit" === this.value) ? "re-edit" : "submit";
+            });
+        });
+        return false;
     }
 };
