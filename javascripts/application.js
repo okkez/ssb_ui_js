@@ -62,17 +62,17 @@ Ssb.API.Book = {
 Ssb.View = {
   initialize: function(){
     $("div#contents")
-      .append($("<div>").attr("id", "state_tabs").addClass("ui-tabs")
-	.append($("<ul>")
-	  .append($("<li>").append($("<a>").attr("href", "#state_tabs-1").text("reading")),
-		  $("<li>").append($("<a>").attr("href", "#state_tabs-2").text("unread")),
-		  $("<li>").append($("<a>").attr("href", "#state_tabs-3").text("wish")),
-		  $("<li>").append($("<a>").attr("href", "#state_tabs-4").text("read"))),
-		$("<div>").attr("id", "state_tabs-1").addClass("books"),
-		$("<div>").attr("id", "state_tabs-2").addClass("books"),
-		$("<div>").attr("id", "state_tabs-3").addClass("books"),
-		$("<div>").attr("id", "state_tabs-4").addClass("books")));
-    $("div#state_tabs > ul").tabs({
+      .append($("<div>").attr("id", "state_tabs")
+    .append($("<ul>")
+      .append($("<li>").append($("<a>").attr("href", "#state_tabs-1").text("reading")),
+          $("<li>").append($("<a>").attr("href", "#state_tabs-2").text("unread")),
+          $("<li>").append($("<a>").attr("href", "#state_tabs-3").text("wish")),
+          $("<li>").append($("<a>").attr("href", "#state_tabs-4").text("read"))),
+        $("<div>").attr("id", "state_tabs-1").addClass("books"),
+        $("<div>").attr("id", "state_tabs-2").addClass("books"),
+        $("<div>").attr("id", "state_tabs-3").addClass("books"),
+        $("<div>").attr("id", "state_tabs-4").addClass("books")));
+    $("div#state_tabs").tabs({
       selected: null,
       cache: true
     }).bind("tabsselect", function(event, ui){
@@ -91,24 +91,24 @@ Ssb.View = {
     };
     var update_state_links = function(stock){
       var states_table = {
-	"reading": ["unread", "wish", "read"],
-	"unread": ["reading", "wish", "read"],
-	"wish": ["reading", "unread", "read"],
-	"read": ["reading", "unread", "wish"]
+        "reading": ["unread", "wish", "read"],
+        "unread": ["reading", "wish", "read"],
+        "wish": ["reading", "unread", "read"],
+        "read": ["reading", "unread", "wish"]
       };
       var update_state_link = function(state){
-	return $("<a>").attr("href", "#")
-	  .text(state+" ").click(function(){
-	    Ssb.API.Book.create_or_update({
-	      asin: stock.book.isbn10,
-	      date: null,
-	      state: state,
-	      "public": true
-	    }, function(data, status){ Ssb.log(data.message); });
-	  });
+    return $("<a>").attr("href", "#")
+      .text(state+" ").click(function(){
+        Ssb.API.Book.create_or_update({
+          asin: stock.book.isbn10,
+          date: null,
+          state: state,
+          "public": true
+        }, function(data, status){ Ssb.log(data.message); });
+      });
       };
       return $.map(states_table[stock.state], function(v, index){
-	return update_state_link(v);
+    return update_state_link(v);
       });
     };
     var state = states[panel.attr("id")];
@@ -116,27 +116,27 @@ Ssb.View = {
       { user_id_type: "name", user_id: Ssb.API.user_name, state: state },
       { include_books: true, page: 1, callback:"?" },
       function(data){
-	if (data.success) {
-	  $("#errorExplanation").empty();
-	  panel.append($("<ul>"));
-	  $.each(data.response.stocks, function(index, stock) {
-	    $("ul", panel)
-		     .append($("<li>").attr("id", stock.stock_id.toString()).addClass("stock")
-			     .append($("<a>").text(stock.book.title).attr("href", stock.book.uri),
-				     $("<br>"),
-				     $("<span>").text("Update State : ")));
+    if (data.success) {
+      $("#errorExplanation").empty();
+      panel.append($("<ul>"));
+      $.each(data.response.stocks, function(index, stock) {
+        $("ul", panel)
+             .append($("<li>").attr("id", stock.stock_id.toString()).addClass("stock")
+                 .append($("<a>").text(stock.book.title).attr("href", stock.book.uri),
+                     $("<br>"),
+                     $("<span>").text("Update State : ")));
             $.each(update_state_links(stock), function(index, alink) {
-	      $("ul > li#" + stock.stock_id  + " > span", panel).append(alink);
-	    });
-	  });
-	  $("li.stock:nth-child(odd)").css("background-color", "#FFFCD0");
-	  $("li.stock:nth-child(even)").css("background-color", "#DEF1FD");
-	} else {
+          $("ul > li#" + stock.stock_id  + " > span", panel).append(alink);
+        });
+      });
+      $("li.stock:nth-child(odd)").css("background-color", "#FFFCD0");
+      $("li.stock:nth-child(even)").css("background-color", "#DEF1FD");
+    } else {
       this.clearMessage();
-	  $("#errorExplanation").empty()
-	    .append($("<h2>").text(data.message),
-		    $("<p>").text(data.message));
-	}
+      $("#errorExplanation").empty()
+        .append($("<h2>").text(data.message),
+            $("<p>").text(data.message));
+    }
       }
     );
   },
