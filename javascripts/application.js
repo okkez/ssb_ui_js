@@ -86,11 +86,11 @@ Ssb.View = {
                                  function(event, ui){
                                      // ui.tab 選択されたタブを表す
                                      // ui.panel 選択されたタブに関連するパネルを表す
-                                     Ssb.View.updatePanel($(ui.panel));
+                                     Ssb.View.updatePanel($(ui.panel), 1);
                                  });
         $("div#contents").show();
     },
-    updatePanel: function(panel){
+    updatePanel: function(panel, page){
         panel.empty();
         var states = {
             "state_tabs-1": "reading",
@@ -123,7 +123,7 @@ Ssb.View = {
         var state = states[panel.attr("id")];
         Ssb.API.Book.find_stocks_by_user_and_state(
             { user_id_type: "name", user_id: Ssb.API.user_name, state: state },
-            { include_books: true, page: 1, callback:"?" },
+            { include_books: true, page: page, callback:"?" },
             function(data){
                 Ssb.View.clearMessage();
                 if (data.success) {
@@ -139,6 +139,7 @@ Ssb.View = {
                             $("ul > li#" + stock.stock_id  + " > span", panel).append(alink);
                         });
                     });
+                    Ssb.View.addPaginationLinks(data.pagination, panel);
                     $("li.stock:nth-child(odd)").css("background-color", "#FFFCD0");
                     $("li.stock:nth-child(even)").css("background-color", "#DEF1FD");
                 } else {
@@ -158,7 +159,7 @@ Ssb.View = {
             .find("p").append($("<span>")
                               .addClass("ui-icon ui-icon-alert")
                               .css("float","left").css("margin-right",".3em"),
-                              $("<strong>").text("Info : "),
+                              $("<strong>").text("Alert : "),
                               $("<span>").text(message));
     },
     addInfoMessage: function(message) {
@@ -169,7 +170,7 @@ Ssb.View = {
             .find("p").append($("<span>")
                               .addClass("ui-icon ui-icon-info")
                               .css("float","left").css("margin-right",".3em"),
-                              $("<strong>").text("Alert : "),
+                              $("<strong>").text("Info : "),
                               $("<span>").text(message)).end().fadeOut(3000);
     },
     toggleForm: function() {
@@ -183,5 +184,40 @@ Ssb.View = {
             });
         });
         return false;
+    },
+    addPaginationLinks: function(pagination, panel) {
+        var f = function(p) {
+            var m = function(page) {
+                return function() {
+                    Ssb.View.updatePanel(panel, page);
+                };
+            };
+            return $('<div>').addClass('pagination_links')
+                .append((function(){
+                             return p.has_previous_page
+                                 ? $('<a>').attr('href', '#').click(m(p.current_page-1)).text('Previous')
+                                 : $('<span>').text('Previous');
+                         })(),
+                         (function() {
+                              var result = $('<span>');
+                              var links = $.map(new Array(p.total_pages), function(e, i) {
+                                  return (p.current_page === i+1)
+                                      ? $('<span>').text(i+1)
+                                      : $('<a>').attr('href', '#').click(m(i+1)).text(i+1);
+                              });
+                              $.each(links, function(i, e){
+                                  result.append(e);
+                              });
+                              console.log(links);
+                              console.log(result);
+                              return result;
+                         })(),
+                         (function() {
+                             return p.has_next_page
+                                  ? $('<a>').attr('href', '#').click(m(p.current_page+1)).text('Next')
+                                  : $('<span>').text('Next');
+                         })());
+        };
+        $(panel).prepend(f(pagination)).append(f(pagination));
     }
 };

@@ -22,6 +22,15 @@ div.books li.stock span a:visited {
   color:blue;
 }
 
+div.pagination_links a {
+  padding: 0 1.5px, 0 1.5px;
+  text-decoration: underline;
+}
+
+div.pagination_links span {
+  padding: 0 1.5px 0 1.5px;
+}
+
 li.item:nth-child(odd) {
   background-color:red;
 }
