@@ -1,5 +1,5 @@
 /*
- * jQuery UI 1.7
+ * jQuery UI 1.7.1
  *
  * Copyright (c) 2009 AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT (MIT-LICENSE.txt)
@@ -14,7 +14,7 @@ var _remove = $.fn.remove,
 
 //Helper functions and ui object
 $.ui = {
-	version: "1.7",
+	version: "1.7.1",
 
 	// $.ui.plugin is deprecated.  Use the proxy pattern instead.
 	plugin: {
@@ -518,7 +518,7 @@ $.ui.mouse.defaults = {
 
 })(jQuery);
 /*
- * jQuery UI Draggable 1.7
+ * jQuery UI Draggable 1.7.1
  *
  * Copyright (c) 2009 AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT (MIT-LICENSE.txt)
@@ -919,7 +919,7 @@ $.widget("ui.draggable", $.extend({}, $.ui.mouse, {
 }));
 
 $.extend($.ui.draggable, {
-	version: "1.7",
+	version: "1.7.1",
 	eventPrefix: "drag",
 	defaults: {
 		addClasses: true,
@@ -1284,7 +1284,7 @@ $.ui.plugin.add("draggable", "zIndex", {
 
 })(jQuery);
 /*
- * jQuery UI Droppable 1.7
+ * jQuery UI Droppable 1.7.1
  *
  * Copyright (c) 2009 AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT (MIT-LICENSE.txt)
@@ -1336,7 +1336,7 @@ $.widget("ui.droppable", {
 
 		if(key == 'accept') {
 			this.options.accept = value && $.isFunction(value) ? value : function(d) {
-				return d.is(accept);
+				return d.is(value);
 			};
 		} else {
 			$.widget.prototype._setData.apply(this, arguments);
@@ -1418,7 +1418,7 @@ $.widget("ui.droppable", {
 });
 
 $.extend($.ui.droppable, {
-	version: "1.7",
+	version: "1.7.1",
 	eventPrefix: 'drop',
 	defaults: {
 		accept: '*',
@@ -1566,7 +1566,7 @@ $.ui.ddmanager = {
 
 })(jQuery);
 /*
- * jQuery UI Resizable 1.7
+ * jQuery UI Resizable 1.7.1
  *
  * Copyright (c) 2009 AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT (MIT-LICENSE.txt)
@@ -2065,7 +2065,7 @@ $.widget("ui.resizable", $.extend({}, $.ui.mouse, {
 }));
 
 $.extend($.ui.resizable, {
-	version: "1.7",
+	version: "1.7.1",
 	eventPrefix: "resize",
 	defaults: {
 		alsoResize: false,
@@ -2244,7 +2244,7 @@ $.ui.plugin.add("resizable", "containment", {
 	resize: function(event, ui) {
 		var self = $(this).data("resizable"), o = self.options,
 				ps = self.containerSize, co = self.containerOffset, cs = self.size, cp = self.position,
-				pRatio = o._aspectRatio || event.shiftKey, cop = { top:0, left:0 }, ce = self.containerElement;
+				pRatio = self._aspectRatio || event.shiftKey, cop = { top:0, left:0 }, ce = self.containerElement;
 
 		if (ce[0] != document && (/static/).test(ce.css('position'))) cop = co;
 
@@ -2273,12 +2273,12 @@ $.ui.plugin.add("resizable", "containment", {
 
 		if (woset + self.size.width >= self.parentData.width) {
 			self.size.width = self.parentData.width - woset;
-			if (pRatio) self.size.height = self.size.width / o.aspectRatio;
+			if (pRatio) self.size.height = self.size.width / self.aspectRatio;
 		}
 
 		if (hoset + self.size.height >= self.parentData.height) {
 			self.size.height = self.parentData.height - hoset;
-			if (pRatio) self.size.width = self.size.height * o.aspectRatio;
+			if (pRatio) self.size.width = self.size.height * self.aspectRatio;
 		}
 	},
 
@@ -2366,7 +2366,7 @@ var isNumber = function(value) {
 
 })(jQuery);
 /*
- * jQuery UI Selectable 1.7
+ * jQuery UI Selectable 1.7.1
  *
  * Copyright (c) 2009 AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT (MIT-LICENSE.txt)
@@ -2442,7 +2442,7 @@ $.widget("ui.selectable", $.extend({}, $.ui.mouse, {
 
 		this._trigger("start", event);
 
-		$('body').append(this.helper);
+		$(options.appendTo).append(this.helper);
 		// position helper (lasso)
 		this.helper.css({
 			"z-index": 100,
@@ -2609,7 +2609,7 @@ $.widget("ui.selectable", $.extend({}, $.ui.mouse, {
 }));
 
 $.extend($.ui.selectable, {
-	version: "1.7",
+	version: "1.7.1",
 	defaults: {
 		appendTo: 'body',
 		autoRefresh: true,
@@ -2623,7 +2623,7 @@ $.extend($.ui.selectable, {
 
 })(jQuery);
 /*
- * jQuery UI Sortable 1.7
+ * jQuery UI Sortable 1.7.1
  *
  * Copyright (c) 2009 AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT (MIT-LICENSE.txt)
@@ -3609,7 +3609,7 @@ $.widget("ui.sortable", $.extend({}, $.ui.mouse, {
 
 $.extend($.ui.sortable, {
 	getter: "serialize toArray",
-	version: "1.7",
+	version: "1.7.1",
 	eventPrefix: "sort",
 	defaults: {
 		appendTo: "parent",
@@ -3642,7 +3642,7 @@ $.extend($.ui.sortable, {
 
 })(jQuery);
 /*
- * jQuery UI Accordion 1.7
+ * jQuery UI Accordion 1.7.1
  *
  * Copyright (c) 2009 AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT (MIT-LICENSE.txt)
@@ -4023,7 +4023,7 @@ $.widget("ui.accordion", {
 
 
 $.extend($.ui.accordion, {
-	version: "1.7",
+	version: "1.7.1",
 	defaults: {
 		active: null,
 		alwaysOpen: true, //deprecated, use collapsible
@@ -4066,7 +4066,7 @@ $.extend($.ui.accordion, {
 			// fix width before calculating height of hidden element
 			var s = options.toShow;
 			originalWidth = s[0].style.width;
-			s.width( parseInt(s.parent().width(),10) - parseInt(s.css("paddingLeft"),10) - parseInt(s.css("paddingRight"),10) - parseInt(s.css("borderLeftWidth"),10) - parseInt(s.css("borderRightWidth"),10) );
+			s.width( parseInt(s.parent().width(),10) - parseInt(s.css("paddingLeft"),10) - parseInt(s.css("paddingRight"),10) - (parseInt(s.css("borderLeftWidth"),10) || 0) - (parseInt(s.css("borderRightWidth"),10) || 0) );
 			
 			$.each(fxAttrs, function(i, prop) {
 				hideProps[prop] = 'hide';
@@ -4119,7 +4119,7 @@ $.extend($.ui.accordion, {
 
 })(jQuery);
 /*
- * jQuery UI Dialog 1.7
+ * jQuery UI Dialog 1.7.1
  *
  * Copyright (c) 2009 AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT (MIT-LICENSE.txt)
@@ -4603,7 +4603,7 @@ $.widget("ui.dialog", {
 });
 
 $.extend($.ui.dialog, {
-	version: "1.7",
+	version: "1.7.1",
 	defaults: {
 		autoOpen: true,
 		bgiframe: false,
@@ -4769,7 +4769,7 @@ $.extend($.ui.dialog.overlay.prototype, {
 
 })(jQuery);
 /*
- * jQuery UI Slider 1.7
+ * jQuery UI Slider 1.7.1
  *
  * Copyright (c) 2009 AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT (MIT-LICENSE.txt)
@@ -4931,6 +4931,7 @@ $.widget("ui.slider", $.extend({}, $.ui.mouse, {
 	destroy: function() {
 
 		this.handles.remove();
+		this.range.remove();
 
 		this.element
 			.removeClass("ui-slider"
@@ -4963,7 +4964,7 @@ $.widget("ui.slider", $.extend({}, $.ui.mouse, {
 		var position = { x: event.pageX, y: event.pageY };
 		var normValue = this._normValueFromMouse(position);
 
-		var distance = this._valueMax() + 1, closestHandle;
+		var distance = this._valueMax() - this._valueMin() + 1, closestHandle;
 		var self = this, index;
 		this.handles.each(function(i) {
 			var thisDistance = Math.abs(normValue - self.values(i));
@@ -5069,7 +5070,15 @@ $.widget("ui.slider", $.extend({}, $.ui.mouse, {
 	},
 
 	_start: function(event, index) {
-		this._trigger("start", event, this._uiHash(index));
+		var uiHash = {
+			handle: this.handles[index],
+			value: this.value()
+		};
+		if (this.options.values && this.options.values.length) {
+			uiHash.value = this.values(index)
+			uiHash.values = this.values()
+		}
+		this._trigger("start", event, uiHash);
 	},
 
 	_slide: function(event, index, newVal) {
@@ -5087,7 +5096,11 @@ $.widget("ui.slider", $.extend({}, $.ui.mouse, {
 				var newValues = this.values();
 				newValues[index] = newVal;
 				// A slide can be canceled by returning false from the slide callback
-				var allowed = this._trigger("slide", event, this._uiHash(index, newVal, newValues));
+				var allowed = this._trigger("slide", event, {
+					handle: this.handles[index],
+					value: newVal,
+					values: newValues
+				});
 				var otherVal = this.values(index ? 0 : 1);
 				if (allowed !== false) {
 					this.values(index, newVal, ( event.type == 'mousedown' && this.options.animate ), true);
@@ -5098,7 +5111,10 @@ $.widget("ui.slider", $.extend({}, $.ui.mouse, {
 
 			if (newVal != this.value()) {
 				// A slide can be canceled by returning false from the slide callback
-				var allowed = this._trigger("slide", event, this._uiHash(index, newVal));
+				var allowed = this._trigger("slide", event, {
+					handle: this.handles[index],
+					value: newVal
+				});
 				if (allowed !== false) {
 					this._setData('value', newVal, ( event.type == 'mousedown' && this.options.animate ));
 				}
@@ -5110,11 +5126,27 @@ $.widget("ui.slider", $.extend({}, $.ui.mouse, {
 	},
 
 	_stop: function(event, index) {
-		this._trigger("stop", event, this._uiHash(index));
+		var uiHash = {
+			handle: this.handles[index],
+			value: this.value()
+		};
+		if (this.options.values && this.options.values.length) {
+			uiHash.value = this.values(index)
+			uiHash.values = this.values()
+		}
+		this._trigger("stop", event, uiHash);
 	},
 
 	_change: function(event, index) {
-		this._trigger("change", event, this._uiHash(index));
+		var uiHash = {
+			handle: this.handles[index],
+			value: this.value()
+		};
+		if (this.options.values && this.options.values.length) {
+			uiHash.value = this.values(index)
+			uiHash.values = this.values()
+		}
+		this._trigger("change", event, uiHash);
 	},
 
 	value: function(newValue) {
@@ -5245,24 +5277,13 @@ $.widget("ui.slider", $.extend({}, $.ui.mouse, {
 			(oRange == "max") && (this.orientation == "vertical") && this.range[animate ? 'animate' : 'css']({ height: (100 - valPercent) + '%' }, { queue: false, duration: o.animate });
 		}
 
-	},
-	
-	_uiHash: function(index, value, values) {
-		
-		var multiple = this.options.values && this.options.values.length;
-		return {
-			handle: this.handles[index],
-			value: value || (multiple ? this.values(index) : this.value()),
-			values: values || (multiple && this.values())
-		};
-
 	}
-
+	
 }));
 
 $.extend($.ui.slider, {
 	getter: "value values",
-	version: "1.7",
+	version: "1.7.1",
 	eventPrefix: "slide",
 	defaults: {
 		animate: false,
@@ -5280,7 +5301,7 @@ $.extend($.ui.slider, {
 
 })(jQuery);
 /*
- * jQuery UI Tabs 1.7
+ * jQuery UI Tabs 1.7.1
  *
  * Copyright (c) 2009 AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT (MIT-LICENSE.txt)
@@ -5893,7 +5914,7 @@ $.widget("ui.tabs", {
 });
 
 $.extend($.ui.tabs, {
-	version: '1.7',
+	version: '1.7.1',
 	getter: 'length',
 	defaults: {
 		ajaxOptions: null,
@@ -5965,7 +5986,7 @@ $.extend($.ui.tabs.prototype, {
 
 })(jQuery);
 /*
- * jQuery UI Datepicker 1.7
+ * jQuery UI Datepicker 1.7.1
  *
  * Copyright (c) 2009 AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT (MIT-LICENSE.txt)
@@ -5979,7 +6000,7 @@ $.extend($.ui.tabs.prototype, {
 
 (function($) { // hide the namespace
 
-$.extend($.ui, { datepicker: { version: "1.7" } });
+$.extend($.ui, { datepicker: { version: "1.7.1" } });
 
 var PROP_NAME = 'datepicker';
 
@@ -6132,6 +6153,7 @@ $.extend(Datepicker.prototype, {
 	/* Attach the date picker to an input field. */
 	_connectDatepicker: function(target, inst) {
 		var input = $(target);
+		inst.trigger = $([]);
 		if (input.hasClass(this.markerClassName))
 			return;
 		var appendText = this._get(inst, 'appendText');
@@ -6144,14 +6166,14 @@ $.extend(Datepicker.prototype, {
 		if (showOn == 'button' || showOn == 'both') { // pop-up date picker when button clicked
 			var buttonText = this._get(inst, 'buttonText');
 			var buttonImage = this._get(inst, 'buttonImage');
-			var trigger = $(this._get(inst, 'buttonImageOnly') ?
+			inst.trigger = $(this._get(inst, 'buttonImageOnly') ?
 				$('<img/>').addClass(this._triggerClass).
 					attr({ src: buttonImage, alt: buttonText, title: buttonText }) :
 				$('<button type="button"></button>').addClass(this._triggerClass).
 					html(buttonImage == '' ? buttonText : $('<img/>').attr(
 					{ src:buttonImage, alt:buttonText, title:buttonText })));
-			input[isRTL ? 'before' : 'after'](trigger);
-			trigger.click(function() {
+			input[isRTL ? 'before' : 'after'](inst.trigger);
+			inst.trigger.click(function() {
 				if ($.datepicker._datepickerShowing && $.datepicker._lastInput == target)
 					$.datepicker._hideDatepicker();
 				else
@@ -6235,14 +6257,15 @@ $.extend(Datepicker.prototype, {
 	   @param  target    element - the target input field or division or span */
 	_destroyDatepicker: function(target) {
 		var $target = $(target);
+		var inst = $.data(target, PROP_NAME);
 		if (!$target.hasClass(this.markerClassName)) {
 			return;
 		}
 		var nodeName = target.nodeName.toLowerCase();
 		$.removeData(target, PROP_NAME);
 		if (nodeName == 'input') {
+			inst.trigger.remove();
 			$target.siblings('.' + this._appendClass).remove().end().
-				siblings('.' + this._triggerClass).remove().end().
 				removeClass(this.markerClassName).
 				unbind('focus', this._showDatepicker).
 				unbind('keydown', this._doKeyDown).
@@ -6255,15 +6278,16 @@ $.extend(Datepicker.prototype, {
 	   @param  target    element - the target input field or division or span */
 	_enableDatepicker: function(target) {
 		var $target = $(target);
+		var inst = $.data(target, PROP_NAME);
 		if (!$target.hasClass(this.markerClassName)) {
 			return;
 		}
 		var nodeName = target.nodeName.toLowerCase();
 		if (nodeName == 'input') {
 		target.disabled = false;
-			$target.siblings('button.' + this._triggerClass).
+			inst.trigger.filter("button").
 			each(function() { this.disabled = false; }).end().
-				siblings('img.' + this._triggerClass).
+				filter("img").
 				css({opacity: '1.0', cursor: ''});
 		}
 		else if (nodeName == 'div' || nodeName == 'span') {
@@ -6278,15 +6302,16 @@ $.extend(Datepicker.prototype, {
 	   @param  target    element - the target input field or division or span */
 	_disableDatepicker: function(target) {
 		var $target = $(target);
+		var inst = $.data(target, PROP_NAME);
 		if (!$target.hasClass(this.markerClassName)) {
 			return;
 		}
 		var nodeName = target.nodeName.toLowerCase();
 		if (nodeName == 'input') {
 		target.disabled = true;
-			$target.siblings('button.' + this._triggerClass).
+			inst.trigger.filter("button").
 			each(function() { this.disabled = true; }).end().
-				siblings('img.' + this._triggerClass).
+				filter("img").
 				css({opacity: '0.5', cursor: 'default'});
 		}
 		else if (nodeName == 'div' || nodeName == 'span') {
@@ -7583,7 +7608,7 @@ $.fn.datepicker = function(options){
 $.datepicker = new Datepicker(); // singleton instance
 $.datepicker.initialized = false;
 $.datepicker.uuid = new Date().getTime();
-$.datepicker.version = "1.7";
+$.datepicker.version = "1.7.1";
 
 // Workaround for #4055
 // Add another global to avoid noConflict issues with inline event handlers
@@ -7591,7 +7616,7 @@ window.DP_jQuery = $;
 
 })(jQuery);
 /*
- * jQuery UI Progressbar 1.7
+ * jQuery UI Progressbar 1.7.1
  *
  * Copyright (c) 2009 AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT (MIT-LICENSE.txt)
@@ -7695,7 +7720,7 @@ $.widget("ui.progressbar", {
 });
 
 $.extend($.ui.progressbar, {
-	version: "1.7",
+	version: "1.7.1",
 	defaults: {
 		value: 0
 	}
@@ -7703,7 +7728,7 @@ $.extend($.ui.progressbar, {
 
 })(jQuery);
 /*
- * jQuery UI Effects 1.7
+ * jQuery UI Effects 1.7.1
  *
  * Copyright (c) 2009 AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT (MIT-LICENSE.txt)
@@ -7714,7 +7739,7 @@ $.extend($.ui.progressbar, {
 ;jQuery.effects || (function($) {
 
 $.effects = {
-	version: "1.7",
+	version: "1.7.1",
 
 	// Saves a set of properties in a data storage
 	save: function(element, set) {
@@ -8246,7 +8271,7 @@ $.extend($.easing,
 
 })(jQuery);
 /*
- * jQuery UI Effects Blind 1.7
+ * jQuery UI Effects Blind 1.7.1
  *
  * Copyright (c) 2009 AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT (MIT-LICENSE.txt)
@@ -8295,7 +8320,7 @@ $.effects.blind = function(o) {
 
 })(jQuery);
 /*
- * jQuery UI Effects Bounce 1.7
+ * jQuery UI Effects Bounce 1.7.1
  *
  * Copyright (c) 2009 AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT (MIT-LICENSE.txt)
@@ -8373,7 +8398,7 @@ $.effects.bounce = function(o) {
 
 })(jQuery);
 /*
- * jQuery UI Effects Clip 1.7
+ * jQuery UI Effects Clip 1.7.1
  *
  * Copyright (c) 2009 AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT (MIT-LICENSE.txt)
@@ -8427,7 +8452,7 @@ $.effects.clip = function(o) {
 
 })(jQuery);
 /*
- * jQuery UI Effects Drop 1.7
+ * jQuery UI Effects Drop 1.7.1
  *
  * Copyright (c) 2009 AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT (MIT-LICENSE.txt)
@@ -8477,7 +8502,7 @@ $.effects.drop = function(o) {
 
 })(jQuery);
 /*
- * jQuery UI Effects Explode 1.7
+ * jQuery UI Effects Explode 1.7.1
  *
  * Copyright (c) 2009 AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT (MIT-LICENSE.txt)
@@ -8556,7 +8581,7 @@ $.effects.explode = function(o) {
 
 })(jQuery);
 /*
- * jQuery UI Effects Fold 1.7
+ * jQuery UI Effects Fold 1.7.1
  *
  * Copyright (c) 2009 AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT (MIT-LICENSE.txt)
@@ -8612,7 +8637,7 @@ $.effects.fold = function(o) {
 
 })(jQuery);
 /*
- * jQuery UI Effects Highlight 1.7
+ * jQuery UI Effects Highlight 1.7.1
  *
  * Copyright (c) 2009 AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT (MIT-LICENSE.txt)
@@ -8660,7 +8685,7 @@ $.effects.highlight = function(o) {
 
 })(jQuery);
 /*
- * jQuery UI Effects Pulsate 1.7
+ * jQuery UI Effects Pulsate 1.7.1
  *
  * Copyright (c) 2009 AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT (MIT-LICENSE.txt)
@@ -8716,7 +8741,7 @@ $.effects.pulsate = function(o) {
 
 })(jQuery);
 /*
- * jQuery UI Effects Scale 1.7
+ * jQuery UI Effects Scale 1.7.1
  *
  * Copyright (c) 2009 AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT (MIT-LICENSE.txt)
@@ -8896,7 +8921,7 @@ $.effects.size = function(o) {
 
 })(jQuery);
 /*
- * jQuery UI Effects Shake 1.7
+ * jQuery UI Effects Shake 1.7.1
  *
  * Copyright (c) 2009 AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT (MIT-LICENSE.txt)
@@ -8953,7 +8978,7 @@ $.effects.shake = function(o) {
 
 })(jQuery);
 /*
- * jQuery UI Effects Slide 1.7
+ * jQuery UI Effects Slide 1.7.1
  *
  * Copyright (c) 2009 AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT (MIT-LICENSE.txt)
@@ -9003,7 +9028,7 @@ $.effects.slide = function(o) {
 
 })(jQuery);
 /*
- * jQuery UI Effects Transfer 1.7
+ * jQuery UI Effects Transfer 1.7.1
  *
  * Copyright (c) 2009 AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT (MIT-LICENSE.txt)
