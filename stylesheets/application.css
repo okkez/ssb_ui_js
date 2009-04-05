@@ -35,11 +35,20 @@ div.mumbles ul {
   list-style-type: none;
 }
 
+div.mumble_header {
+  font-size: 80%;
+  color: gray;
+}
+
+div.mumble_body {
+}
+
 a.mumbles {
   width: 24px;
   height: 24px;
   background-image: url(images/pearls_orange_icon_010_24x24.png);
   background-repeat: no-repeat;
+  text-decoration: none;
 }
 
 /*

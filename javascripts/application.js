@@ -97,6 +97,9 @@ Ssb.API.Book = {
     find_mumbles_by_book: function(options, params, callback) {
         $.getJSON(Ssb.Util.url(Ssb.API.site+"book/{book_id_type}/{book_id}/mumbles.json", options, params), callback);
     },
+    find_mumbles_by_user: function(options, params, callback) {
+        $.getJSON(Ssb.Util.url(Ssb.API.site+"user/{user_id_type}/{user_id}/mumbles.json", options, params), callback);
+    },
     create_or_update: function(book, callback) {
         if (Ssb.API.token === null || Ssb.API.token === ""){
             Ssb.log([book.asin, book.state]);
@@ -118,17 +121,18 @@ Ssb.View = {
         }).end().find("input#toggle").each(function(i,e) {
             $(e).click(Ssb.View.toggleForm).attr("value", "re-edit").show();
         });
+        $("a#user_mumbles").click(function(){ return Ssb.View.viewUserMumbles(); });
         $("div#contents")
             .append($("<div>").attr("id", "state_tabs")
-            .append($("<ul>")
-                    .append($("<li>").append($("<a>").attr("href", "#state_tabs-1").text("reading")),
-                            $("<li>").append($("<a>").attr("href", "#state_tabs-2").text("unread")),
-                            $("<li>").append($("<a>").attr("href", "#state_tabs-3").text("wish")),
-                            $("<li>").append($("<a>").attr("href", "#state_tabs-4").text("read"))),
-                    $("<div>").attr("id", "state_tabs-1").addClass("books"),
-                    $("<div>").attr("id", "state_tabs-2").addClass("books"),
-                    $("<div>").attr("id", "state_tabs-3").addClass("books"),
-                    $("<div>").attr("id", "state_tabs-4").addClass("books")));
+                    .append($("<ul>")
+                            .append($("<li>").append($("<a>").attr("href", "#state_tabs-1").text("reading")),
+                                    $("<li>").append($("<a>").attr("href", "#state_tabs-2").text("unread")),
+                                    $("<li>").append($("<a>").attr("href", "#state_tabs-3").text("wish")),
+                                    $("<li>").append($("<a>").attr("href", "#state_tabs-4").text("read"))),
+                            $("<div>").attr("id", "state_tabs-1").addClass("books"),
+                            $("<div>").attr("id", "state_tabs-2").addClass("books"),
+                            $("<div>").attr("id", "state_tabs-3").addClass("books"),
+                            $("<div>").attr("id", "state_tabs-4").addClass("books")));
         $("div#state_tabs").tabs({
                                      selected: null,
                                      cache: true
@@ -285,8 +289,8 @@ Ssb.View = {
                     $.each(data.response.mumbles, function(index, mumble) {
                         $(id + " > ul").append(
                             $("<li>").addClass("mumble").append(
-                                $("<div>").text(Ssb.Util.rough_time_string(mumble.time) + " : " + mumble.user.nick),
-                                $("<div>").text(mumble.body)));
+                                $("<div>").addClass("mumble_header").text(Ssb.Util.rough_time_string(mumble.time) + " : " + mumble.user.nick),
+                                $("<div>").addClass("mumble_body").text(mumble.body)));
                     });
                     $("li.mumble:nth-child(odd)").css("background-color", "#C1FFC1");
                     $("li.mumble:nth-child(even)").css("background-color", "#FFE4E1");
@@ -295,7 +299,41 @@ Ssb.View = {
                         width: 600,
                         height: 200
                     });
-                    console.log(data.message);
+                } else {
+                    Ssb.View.addErrorMessage(data.message);
+                }
+            }
+        );
+        return false;
+    },
+    viewUserMumbles: function() {
+        if (!Ssb.API.user_name) {
+            return false;
+        }
+        var id = "user_mumbles_dialog";
+        $("div#contents").append($("<div>").attr("id", id).addClass("mumbles").hide());
+        id = "#" + id;
+        Ssb.API.Book.find_mumbles_by_user(
+            { user_id_type: "name", user_id: Ssb.API.user_name },
+            { include_books: true, page: 1, callback: "?" },
+            function(data) {
+                Ssb.View.clearMessage();
+                if (data.success) {
+                    Ssb.View.addInfoMessage(data.message);
+                    $(id).append($("<ul>"));
+                    $.each(data.response.mumbles, function(index, mumble) {
+                        $(id + " > ul").append(
+                            $("<li>").addClass("mumble").append(
+                                $("<div>").addClass("mumble_header").text(Ssb.Util.rough_time_string(mumble.time) + " : " + mumble.book.title),
+                                $("<div>").addClass("mumble_body").text(mumble.body)));
+                    });
+                    $("li.mumble:nth-child(odd)").css("background-color", "#C1FFC1");
+                    $("li.mumble:nth-child(even)").css("background-color", "#FFE4E1");
+                    $(id).dialog({
+                        title: "mumbles by " + Ssb.API.user_name,
+                        width: 600,
+                        height: 200
+                    });
                 } else {
                     Ssb.View.addErrorMessage(data.message);
                 }
