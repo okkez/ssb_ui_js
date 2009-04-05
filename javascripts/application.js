@@ -29,6 +29,53 @@ Ssb.Util = {
         result = this.append_query_parameters(result, params);
         Ssb.log(result);
         return result;
+    },
+    rough_time_string: function(time) {
+        console.log(time);
+        var m = /^(\d+?)-(\d+?)-(\d+?) (\d+?):(\d+?):(\d+?)$/.exec(time);
+        var now = new Date(); // NOTE: Is this right way to get current time?
+        m = $.map(m, function(e, i) { return new Number(e); });
+        var date = new Date(m[1], m[2]-1, m[3], m[4], m[5], m[6]);
+        var diff = now.getTime() - date.getTime();
+        var f = function (d) {
+            return {
+                minutes: Math.floor(d / (1000 * 60)),
+                hours:   Math.floor(d / (1000 * 60 * 60)),
+                day:     Math.floor(d / (1000 * 60 * 60 * 24)),
+                month:   Math.floor(d / (1000 * 60 * 60 * 24 * 30)),
+                year:    Math.floor(d / (1000 * 60 * 60 * 24 * 365))
+            };
+        };
+        var s = function(num) {
+            if (num == 1) {
+                return "";
+            } else {
+                return "s";
+            }
+        };
+        var r = f(diff);
+        Ssb.log(["diff", r]);
+        if (r.year > 0){
+            r["suffix"] = s(r.year);
+            return Ssb.Util.t("about {year} year{suffix} ago", r);
+        }
+        if (r.month > 0){
+            r["suffix"] = s(r.month);
+            return Ssb.Util.t("about {month} month{suffix} ago", r);
+        }
+        if (r.day > 0){
+            r["suffix"] = s(r.day);
+            return Ssb.Util.t("about {day} day{suffix} ago", r);
+        }
+        if (r.hour > 0){
+            r["suffix"] = s(r.hour);
+            return Ssb.Util.t("about {hour} hour{suffix} ago", r);
+        }
+        if (r.minute > 0){
+            r["suffix"] = s(r.minute);
+            return Ssb.Util.t("about {minute} minute{suffix} ago", r);
+        }
+        return "";
     }
 };
 
@@ -46,6 +93,9 @@ Ssb.API.Book = {
     },
     find_stocks_by_user_and_state: function(options, params, callback){
         $.getJSON(Ssb.Util.url(Ssb.API.site+"user/{user_id_type}/{user_id}/stocks/{state}.json", options, params), callback);
+    },
+    find_mumbles_by_book: function(options, params, callback) {
+        $.getJSON(Ssb.Util.url(Ssb.API.site+"book/{book_id_type}/{book_id}/mumbles.json", options, params), callback);
     },
     create_or_update: function(book, callback) {
         if (Ssb.API.token === null || Ssb.API.token === ""){
@@ -133,6 +183,7 @@ Ssb.View = {
                         $("ul", panel)
                             .append($("<li>").attr("id", stock.stock_id.toString()).addClass("stock")
                                     .append($("<a>").text(stock.book.title).attr("href", stock.book.uri),
+                                            $("<a>").addClass("mumbles").text("\u3000").attr("title", "mumbles").attr("href", "#").click(function() { return Ssb.View.viewMumbles(stock); }),
                                             $("<br>"),
                                             $("<span>").text("Update State : ")));
                         $.each(update_state_links(stock), function(index, alink) {
@@ -219,5 +270,37 @@ Ssb.View = {
                          })());
         };
         $(panel).prepend(f(pagination)).append(f(pagination));
+    },
+    viewMumbles: function(stock) {
+        $("li#"+stock.stock_id).append($("<div>").attr("id", "mumbles_" + stock.book.isbn10).addClass("mumbles").hide());
+        Ssb.API.Book.find_mumbles_by_book(
+            { book_id_type: "isbn10", book_id: stock.book.isbn10 },
+            { page: "1", include_users: true, callback: "?" },
+            function(data) {
+                Ssb.View.clearMessage();
+                if (data.success) {
+                    Ssb.View.addInfoMessage(data.message);
+                    var id = "#mumbles_"+stock.book.isbn10;
+                    $(id).append($("<ul>"));
+                    $.each(data.response.mumbles, function(index, mumble) {
+                        $(id + " > ul").append(
+                            $("<li>").addClass("mumble").append(
+                                $("<div>").text(Ssb.Util.rough_time_string(mumble.time) + " : " + mumble.user.nick),
+                                $("<div>").text(mumble.body)));
+                    });
+                    $("li.mumble:nth-child(odd)").css("background-color", "#C1FFC1");
+                    $("li.mumble:nth-child(even)").css("background-color", "#FFE4E1");
+                    $(id).dialog({
+                        title: "mumbles about " + stock.book.isbn10 + " (" + data.response.mumbles.length + ")",
+                        width: 600,
+                        height: 200
+                    });
+                    console.log(data.message);
+                } else {
+                    Ssb.View.addErrorMessage(data.message);
+                }
+            }
+        );
+        return false;
     }
 };

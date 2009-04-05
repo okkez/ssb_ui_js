@@ -31,9 +31,28 @@ div.pagination_links span {
   padding: 0 1.5px 0 1.5px;
 }
 
-li.item:nth-child(odd) {
+div.mumbles ul {
+  list-style-type: none;
+}
+
+a.mumbles {
+  width: 24px;
+  height: 24px;
+  background-image: url(images/pearls_orange_icon_010_24x24.png);
+  background-repeat: no-repeat;
+}
+
+/*
+li.stock:nth-child(odd) {
   background-color:red;
 }
-li.item:nth-child(even) {
+li.stock:nth-child(even) {
   background-color:blue;
 }
+li.mumble:nth-child(odd) {
+  background-color:red;
+}
+li.mumble:nth-child(even) {
+  background-color:blue;
+}
+*/
