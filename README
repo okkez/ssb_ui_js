@@ -14,12 +14,13 @@ upload files and access index.html by web browser.
 * you can see your stcoks by state.
 * you can see other people's stocks by state.
 * you can update stock state.
+* you can read your mumbles.
+* you can read your stocks' mumbles.
 
 = TODO
 
-* paginate
+* paginate 
 * entry books
-* read mumbles
 * post mumbles
 * improve design
 
