@@ -1,8 +1,8 @@
 // Date extension
-Date.prototype['strftime'] = function(format) {
+Date.prototype.strftime = function(format) {
     var f = function(num) {
-        var str = num.toString() ;
-        if (str.length == 1) {
+        var str = num.toString();
+        if (str.length === 1) {
             str = '0' + str;
         }
         return str;
@@ -42,7 +42,7 @@ Ssb.Util = {
     append_query_parameters: function(url, params){
         var temp = [];
         $.each(params, function(key, val){ temp.push(key + "=" + val); });
-        if (temp.length == 0) {
+        if (temp.length === 0) {
             return url;
         }
         return url + "?" + temp.join("&");
@@ -70,7 +70,7 @@ Ssb.Util = {
             };
         };
         var s = function(num) {
-            if (num == 1) {
+            if (num === 1) {
                 return "";
             } else {
                 return "s";
@@ -79,23 +79,23 @@ Ssb.Util = {
         var r = f(diff);
         Ssb.log(["diff", r]);
         if (r.year > 0){
-            r["suffix"] = s(r.year);
+            r.suffix = s(r.year);
             return Ssb.Util.t("about {year} year{suffix} ago", r);
         }
         if (r.month > 0){
-            r["suffix"] = s(r.month);
+            r.suffix = s(r.month);
             return Ssb.Util.t("about {month} month{suffix} ago", r);
         }
         if (r.day > 0){
-            r["suffix"] = s(r.day);
+            r.suffix = s(r.day);
             return Ssb.Util.t("about {day} day{suffix} ago", r);
         }
         if (r.hour > 0){
-            r["suffix"] = s(r.hour);
+            r.suffix = s(r.hour);
             return Ssb.Util.t("about {hour} hour{suffix} ago", r);
         }
         if (r.minute > 0){
-            r["suffix"] = s(r.minute);
+            r.suffix = s(r.minute);
             return Ssb.Util.t("about {minute} minute{suffix} ago", r);
         }
         return "";
@@ -295,16 +295,16 @@ Ssb.View = {
             };
             return $('<div>').addClass('pagination_links')
                 .append((function(){
-                             return p.has_previous_page
-                                 ? $('<a>').attr('href', '#').click(m(p.current_page-1)).text('Previous')
-                                 : $('<span>').text('Previous');
+                             return p.has_previous_page ?
+                                 $('<a>').attr('href', '#').click(m(p.current_page-1)).text('Previous') :
+                                 $('<span>').text('Previous');
                          })(),
                          (function() {
                               var result = $('<span>');
                               var links = $.map(new Array(p.total_pages), function(e, i) {
-                                  return (p.current_page === i+1)
-                                      ? $('<span>').text(i+1)
-                                      : $('<a>').attr('href', '#').click(m(i+1)).text(i+1);
+                                  return (p.current_page === i+1) ?
+                                                        $('<span>').text(i+1) :
+                                                        $('<a>').attr('href', '#').click(m(i+1)).text(i+1);
                               });
                               $.each(links, function(i, e){
                                   result.append(e);
@@ -314,9 +314,9 @@ Ssb.View = {
                               return result;
                          })(),
                          (function() {
-                             return p.has_next_page
-                                  ? $('<a>').attr('href', '#').click(m(p.current_page+1)).text('Next')
-                                  : $('<span>').text('Next');
+                             return p.has_next_page ?
+                                  $('<a>').attr('href', '#').click(m(p.current_page+1)).text('Next') :
+                                  $('<span>').text('Next');
                          })());
         };
         $(panel).prepend(f(pagination)).append(f(pagination));
