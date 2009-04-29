@@ -1,3 +1,26 @@
+// Date extension
+Date.prototype['strftime'] = function(format) {
+    var f = function(num) {
+        var str = num.toString() ;
+        if (str.length == 1) {
+            str = '0' + str;
+        }
+        return str;
+    };
+    // とりあえず使うモノだけ
+    var data = {
+        '%Y': this.getFullYear(),
+        '%m': f(this.getMonth() + 1),
+        '%d': f(this.getDate())
+    };
+    var result = format;
+    $.each(data, function(key, value){
+        result = result.replace(new RegExp(key), value);
+    });
+    return result;
+};
+
+
 // Stack Stock Books
 var Ssb = {
     DEBUG: true,
@@ -11,18 +34,18 @@ var Ssb = {
 Ssb.Util = {
     t: function(template, data){
         var result = template;
-        $.each(data,
-               function(key, value){
-                   result = result.replace(new RegExp("{"+key+"}"), value);
-               });
+        $.each(data, function(key, value){
+            result = result.replace(new RegExp("{"+key+"}"), value);
+        });
         return result;
     },
     append_query_parameters: function(url, params){
-        var result = url;
-        result = result + "?";
         var temp = [];
         $.each(params, function(key, val){ temp.push(key + "=" + val); });
-        return result + temp.join("&");
+        if (temp.length == 0) {
+            return url;
+        }
+        return url + "?" + temp.join("&");
     },
     url: function(template, options, params){
         var result = this.t(template, options);
@@ -81,6 +104,7 @@ Ssb.Util = {
 
 Ssb.API = {
     site: "http://stack.nayutaya.jp/api/",
+    wrapper_site: "http://localhost:10080/ssb/api/",
     user_name: null,
     token: null,
     initialize: function(){
@@ -108,7 +132,11 @@ Ssb.API.Book = {
         // book = { asin:1234567890, date:'yyyy-mm-dd', state:'unread', public:true }
         var body = $.toJSON([book]);
         Ssb.log(body);
-        $.post(Ssb.Util.url(Ssb.API.site+"{user_name}/{token}/stocks/update.1", { user_name: Ssb.API.user_name, token: Ssb.API.token }), { request: body }, callback);
+        $.post(Ssb.Util.url(Ssb.API.wrapper_site+"{user_name}/{token}/stocks/update",
+                            { user_name: Ssb.API.user_name, token: Ssb.API.token }, { callback: '?' }),
+               { request: body }, callback, 'json');
+        // $.post(Ssb.Util.url(Ssb.API.site+"{user_name}/{token}/stocks/update.1",
+        //                     { user_name: Ssb.API.user_name, token: Ssb.API.token }, { callback: '?' }), { request: body }, callback);
     }
 };
 
@@ -163,11 +191,11 @@ Ssb.View = {
                 return $("<a>").attr("href", "#")
                     .text(state+" ").click(function(){
                                                Ssb.API.Book.create_or_update({
-                                                                                 asin: stock.book.isbn10,
-                                                                                 date: null,
-                                                                                 state: state,
-                                                                                 "public": true
-                                                                             }, function(data, status){ Ssb.log(data.message); });
+                                                   asin: stock.book.isbn10,
+                                                   date: (new Date()).strftime('%Y-%m-%d'),
+                                                   state: state,
+                                                   "public": true
+                                               }, function(data, status){ Ssb.View.updateStateCallback(data, status); });
                                            });
             };
             return $.map(states_table[stock.state], function(v, index){
@@ -181,17 +209,16 @@ Ssb.View = {
             function(data){
                 Ssb.View.clearMessage();
                 if (data.success) {
-                    Ssb.View.addInfoMessage(data.message);
                     panel.append($("<ul>"));
                     $.each(data.response.stocks, function(index, stock) {
                         $("ul", panel)
-                            .append($("<li>").attr("id", stock.stock_id.toString()).addClass("stock")
+                            .append($("<li>").attr("id", stock.book.isbn10).addClass("stock")
                                     .append($("<a>").text(stock.book.title).attr("href", stock.book.uri),
                                             $("<a>").addClass("mumbles").text("\u3000").attr("title", "mumbles").attr("href", "#").click(function() { return Ssb.View.viewMumbles(stock); }),
                                             $("<br>"),
                                             $("<span>").text("Update State : ")));
                         $.each(update_state_links(stock), function(index, alink) {
-                            $("ul > li#" + stock.stock_id  + " > span", panel).append(alink);
+                            $("ul > li#" + stock.book.isbn10  + " > span", panel).append(alink);
                         });
                     });
                     Ssb.View.addPaginationLinks(data.pagination, panel);
@@ -204,29 +231,48 @@ Ssb.View = {
         );
     },
     clearMessage: function() {
-        $("div#message").hide().find("p").empty();
+        if ($('#info_message')) {
+            $('#info_message').dialog('destroy');
+        }
+        if ($("#error_message")) {
+            $("#error_message").dialog('destroy');
+        }
     },
     addErrorMessage: function(message) {
-        $("div#message").show().click(function(event) { $(this).hide(); })
-            .find("div")
-            .removeClass("ui-state-highlight")
-            .addClass("ui-state-error")
-            .find("p").append($("<span>")
-                              .addClass("ui-icon ui-icon-alert")
-                              .css("float","left").css("margin-right",".3em"),
-                              $("<strong>").text("Alert : "),
-                              $("<span>").text(message));
+        var id = "error_message";
+        $("div#message").append($("<div>").attr("id", id).hide());
+        id = "#"+id;
+        $(id).append($("<div>").addClass("ui-state-error ui-corner-all")
+                     .append($("<p>")
+                             .append($("<span>")
+                                     .addClass("ui-icon ui-icon-alert")
+                                     .css("float","left").css("margin-right",".3em"),
+                                     $("<strong>").text("Alert : "),
+                                     $("<span>").text(message))));
+        $(id).dialog({
+            title: "Error Message",
+            width: 600,
+            height: 200
+        });
     },
     addInfoMessage: function(message) {
-        $("div#message").show()
-            .find("div")
-            .addClass("ui-state-highlight")
-            .removeClass("ui-state-error")
-            .find("p").append($("<span>")
-                              .addClass("ui-icon ui-icon-info")
-                              .css("float","left").css("margin-right",".3em"),
-                              $("<strong>").text("Info : "),
-                              $("<span>").text(message)).end().fadeOut(3000);
+        var id = "info_message";
+        $("div#message").append($("<div>").attr("id", id).hide());
+        id = "#"+id;
+        $(id).append($("<div>")
+                     .addClass("ui-state-highlight ui-corner-all")
+                     .append($("<p>")
+                             .append($("<span>")
+                                     .addClass("ui-icon ui-icon-info")
+                                     .css("float","left").css("margin-right",".3em"),
+                                     $("<strong>").text("Info : "),
+                                     $("<span>").text(message))));
+        $(id).dialog({
+            title: "Info Message",
+            width: 600,
+            height: 200,
+            open: function(event) { $(this).fadeOut('slow', function(){ $(this).dialog('destroy'); }); }
+        });
     },
     toggleForm: function() {
         $("div#initialize_form").find("input[type='text']").each(function(i, e) {
@@ -276,14 +322,13 @@ Ssb.View = {
         $(panel).prepend(f(pagination)).append(f(pagination));
     },
     viewMumbles: function(stock) {
-        $("li#"+stock.stock_id).append($("<div>").attr("id", "mumbles_" + stock.book.isbn10).addClass("mumbles").hide());
+        $("li#"+stock.book.isbn10).append($("<div>").attr("id", "mumbles_" + stock.book.isbn10).addClass("mumbles").hide());
         Ssb.API.Book.find_mumbles_by_book(
             { book_id_type: "isbn10", book_id: stock.book.isbn10 },
             { page: "1", include_users: true, callback: "?" },
             function(data) {
                 Ssb.View.clearMessage();
                 if (data.success) {
-                    Ssb.View.addInfoMessage(data.message);
                     var id = "#mumbles_"+stock.book.isbn10;
                     $(id).append($("<ul>"));
                     $.each(data.response.mumbles, function(index, mumble) {
@@ -319,7 +364,6 @@ Ssb.View = {
             function(data) {
                 Ssb.View.clearMessage();
                 if (data.success) {
-                    Ssb.View.addInfoMessage(data.message);
                     $(id).append($("<ul>"));
                     $.each(data.response.mumbles, function(index, mumble) {
                         $(id + " > ul").append(
@@ -340,5 +384,12 @@ Ssb.View = {
             }
         );
         return false;
+    }, updateStateCallback: function(data, status) {
+        if (status) {
+            Ssb.View.addInfoMessage(data.message);
+            $("#"+data.response[0].asin).fadeOut('slow', function(){ $(this).remove(); });
+        } else {
+            Ssb.View.addErrorMessage(data.message);
+        }
     }
 };

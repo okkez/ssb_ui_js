@@ -7,7 +7,13 @@ Using HTML, CSS and JavaScript(jQuery).
 
 = How to use
 
-upload files and access index.html by web browser.
+execute below command.
+
+  $ ruby standalone.rb
+
+access 'http://localhost:10080/'
+
+Enjoy!
 
 = Features
 
