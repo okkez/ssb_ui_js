@@ -224,6 +224,10 @@ Ssb.View = {
                     Ssb.View.addPaginationLinks(data.pagination, panel);
                     $("li.stock:nth-child(odd)").css("background-color", "#FFFCD0");
                     $("li.stock:nth-child(even)").css("background-color", "#DEF1FD");
+                    $("ul li", panel).quicksearch({
+                        attached: panel,
+                        inputText: "Search"
+                    });
                 } else {
                     Ssb.View.addErrorMessage(data.message);
                 }
